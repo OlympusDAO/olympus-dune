@@ -2,7 +2,7 @@ WITH new_bond AS (
     SELECT  token_address::bytea
         ,   create_date
         ,   conclusion_date
-        ,   extract(epoch from conclusion_date) as conclusion_epoch
+        ,   ROUND(extract(epoch from conclusion_date)) as conclusion_epoch
         ,   extract(epoch from conclusion_date - create_date) AS seconds_market_is_live
         ,   vesting_length * 86400 as vesting_length_seconds
         ,   tune_interval * 3600 as tune_interval
@@ -63,8 +63,8 @@ FROM (
         ,   daily_capacity
         ,   ROUND(((daily_capacity * days_market_is_live * deposit_interval / seconds_market_is_live) * ohm_price)::numeric, 0) as max_payout_usd
         ,   ROUND((((daily_capacity * days_market_is_live)) *  deposit_interval / seconds_market_is_live)::numeric, 0) as max_payout_ohm
-        ,   daily_capacity * days_market_is_live AS total_capacity 
-        ,   CONCAT(daily_capacity * days_market_is_live, REPEAT('0',9)) AS param_market_total_capacity
+        ,   ROUND(daily_capacity * days_market_is_live) AS total_capacity 
+        ,   CONCAT(ROUND(daily_capacity * days_market_is_live), REPEAT('0',9)) AS param_market_total_capacity
         ,   ROUND(ohm_token_price * 1e9 * (1-ip_discount)) as param_market_price
         ,   100000 as param_market_debt_buffer
         ,   'false' as param_bool_cap_in_quote_token
@@ -94,8 +94,8 @@ FROM (
         ,   daily_capacity
         ,   ROUND((daily_capacity * days_market_is_live * token_price * deposit_interval / seconds_market_is_live)::numeric,0) as max_payout_usd
         ,   ROUND((daily_capacity * days_market_is_live * deposit_interval / seconds_market_is_live / ohm_token_price)::numeric,0) as max_payout_ohm
-        ,   daily_capacity * days_market_is_live AS total_capacity 
-        ,   CONCAT(daily_capacity * days_market_is_live, REPEAT('0',decimals)) AS param_market_total_capacity
+        ,   ROUND(daily_capacity * days_market_is_live) AS total_capacity 
+        ,   CONCAT(ROUND(daily_capacity * days_market_is_live), REPEAT('0',decimals)) AS param_market_total_capacity
         ,   ROUND(ohm_token_price * (1-ip_discount)) * 1e9 as param_market_price
         ,   100000 as param_market_debt_buffer
         ,   'true' as param_bool_cap_in_quote_token
