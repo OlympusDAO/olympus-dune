@@ -65,7 +65,7 @@ FROM (
         ,   ROUND((((daily_capacity * days_market_is_live)) *  deposit_interval / seconds_market_is_live)::numeric, 0) as max_payout_ohm
         ,   daily_capacity * days_market_is_live AS total_capacity 
         ,   CONCAT(daily_capacity * days_market_is_live, REPEAT('0',9)) AS param_market_total_capacity
-        ,   ROUND(ohm_token_price * (1-ip_discount)) * 1e9 as param_market_price
+        ,   ROUND(ohm_token_price * 1e9 * (1-ip_discount)) as param_market_price
         ,   100000 as param_market_debt_buffer
         ,   'false' as param_bool_cap_in_quote_token
         ,   'true' as param_bool_fixed_term
