@@ -1,4 +1,4 @@
-CREATE OR REPLACE VIEW dune_user_generated.ohm_inverse_bond_markets AS
+--CREATE OR REPLACE VIEW dune_user_generated.ohm_inverse_bond_markets AS
 /*
 --Testing before contract deploy. Used remix to grab data for CreateMarket
 WITH trans as (
@@ -35,12 +35,11 @@ WITH create_market_trans AS (
     from ethereum."transactions" as trans
     JOIN ethereum."logs" AS logs
         ON logs.tx_hash = trans.hash
-        AND logs.contract_address = '\x22AE99D07584A2AE1af748De573c83f1B9Cdb4c0' --BondDepo
-        AND topic1 = '\xc983f5286f433c36d6f24f4fda9749b373987ca1e2826ab14e6add4d36406cc0' --CreateMarket Event
     LEFT JOIN  olympus_v2."OlympusProV2_evt_CreateMarket" AS create_market
         ON create_market.evt_tx_hash = trans.hash
         AND create_market.evt_index = logs.index
-    WHERE trans."to" = '\x0cf30dc0d48604a301df8010cdc028c055336b2e' --Policy MultiSig
+    WHERE logs.contract_address = '\x22AE99D07584A2AE1af748De573c83f1B9Cdb4c0' --BondDepo
+        AND topic1 = '\xc983f5286f433c36d6f24f4fda9749b373987ca1e2826ab14e6add4d36406cc0' --CreateMarket Event
 )
 , CreateMarket AS (
     SELECT market_id
